@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Restaurant {
+  id               String             @id @default(uuid())
+  name             String
+  address          Json?
+  restaurantConfig RestaurantConfig[]
+  employees        Employee[]
+  reservations     Reservation[]
+  owners           Owner[]
+}
+
+model RestaurantConfig {
+  id                  String     @id @default(uuid())
+  restaurant          Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId        String
+  openedAt            Float
+  closedAt            Float
+  tableCount          Int
+  reservationDuration Float
+}
+
+model Employee {
+  id           String     @id @default(uuid())
+  roqUserId    String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+}
+
+model Owner {
+  id           String     @id @default(uuid())
+  roqUserId    String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+}
+
+model Guest {
+  id           String        @id @default(uuid())
+  roqUserId    String
+  reservations Reservation[]
+}
+
+model Reservation {
+  id           String            @id @default(uuid())
+  restaurant   Restaurant        @relation(fields: [restaurantId], references: [id])
+  restaurantId String
+  guest        Guest             @relation(fields: [guestId], references: [id])
+  guestId      String
+  startDate    Float
+  endDate      Float
+  status       ReservationStatus
+}
+
+enum ReservationStatus {
+  SUCCESSFUL
+  APPROVED
+  DECLINED
+  FAILED
+}

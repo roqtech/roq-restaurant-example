@@ -4,24 +4,27 @@ import { RoqProvider, ChatProvider } from "@roq/nextjs";
 import { clientConfig } from "config";
 import "@roq/nextjs/index.css";
 import { roqThemeLight } from "styles/roq-theme";
+import { ChakraProvider } from "@chakra-ui/react";
 
 export default function App({ Component, pageProps }: AppProps) {
   /*
     The ROQ provider sets the context for inner ROQ components to consume variables such as the session
   */
   return (
-    <RoqProvider
-      config={{
-        host: clientConfig.roq.platformURL,
-        auth: {
-          useRoqAuth: true,
-        },
-      }}
-      theme={roqThemeLight}
-    >
-      <ChatProvider>
-        <Component {...pageProps} />
-      </ChatProvider>
-    </RoqProvider>
+    <ChakraProvider>
+      <RoqProvider
+        config={{
+          host: clientConfig.roq.platformURL,
+          auth: {
+            useRoqAuth: true,
+          },
+        }}
+        theme={roqThemeLight}
+      >
+        <ChatProvider>
+          <Component {...pageProps} />
+        </ChatProvider>
+      </RoqProvider>
+    </ChakraProvider>
   );
 }
